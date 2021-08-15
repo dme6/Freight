@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <windows.h>
-#include <time.h>
 
 #define BLUE 1
 #define YELLOW 6

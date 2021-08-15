@@ -23,6 +23,10 @@ int handleArgs(int argc, const char* const* argv) {
 
         if(!signUp(argc, argv, configLoc)) return 0;
 
+    } else if(strcmp(argv[1], "login") == 0) {
+
+        if(!logIn(argc, argv, configLoc)) return 0;
+
     }
 
     return 1;

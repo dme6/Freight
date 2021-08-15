@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include "../logger/logger.h"
 
 static void fAppend(char* configBuffer, const char* name, const char* data) {
