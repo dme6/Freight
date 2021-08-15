@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "conio.h": "c",
+        "unistd.h": "c",
+        "logger.h": "c",
+        "functions.h": "c"
+    }
+}
