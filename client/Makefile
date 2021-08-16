@@ -2,7 +2,7 @@ CC   := gcc
 SRC  := $(shell dir /S /B .\src\*.c)
 EXE  := ./bin/main.exe
 LIBS := -lws2_32
-ARGS := setserver 1 1
+ARGS := getserver
 
 $(EXE): $(SRC)
 	@$(CC) $^ -o $@ $(LIBS)

@@ -11,6 +11,10 @@ static void fToL() {
     logError("Failed to locate the specified entry.");
 }
 
+static void tooLarge() {
+    logWarning("Failed to read an entry properly because it is too large.");
+}
+
 int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
     char* configBuffer = malloc(sizeof(char) * 1000);
@@ -21,8 +25,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
     FILE* fp = fopen(loc, "r");
 
     if(!fp) {
-        logWarning("Config file doesn't exist. One will be created.");
-        fclose(fp);
+        logWarning("Failed to access configuration file. One will be created.");
         fclose(fopen(loc, "w"));
         fp = fopen(loc, "r");
     }
@@ -30,6 +33,10 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
     int found = 0;
     
     while(fgets(lineBuffer, sizeof(lineBuffer), fp)) {
+
+        if(lineBuffer[strlen(lineBuffer) - 1] != '\n') {
+            tooLarge();
+        }
 
         char nameTok[sizeof(lineBuffer)];
         strcpy(nameTok, lineBuffer);
@@ -71,9 +78,11 @@ int getConfigEntry(char* out, const char* loc, const char* name) {
         return 0;
     }
 
-    int found = 0;
-
     while(fgets(lineBuffer, sizeof(lineBuffer), fp)) {
+
+        if(lineBuffer[strlen(lineBuffer) - 1] != '\n') {
+            tooLarge();
+        }
 
         char tok[sizeof(lineBuffer)];
         strcpy(tok, lineBuffer);
@@ -85,7 +94,6 @@ int getConfigEntry(char* out, const char* loc, const char* name) {
             data[strlen(data) - 1] = '\0';
             strcpy(out, data);
 
-            found = 1;
             fclose(fp);
             return 1;
 
@@ -93,12 +101,9 @@ int getConfigEntry(char* out, const char* loc, const char* name) {
 
     }
 
-    if(!found) {
-        fclose(fp);
-        fToL();
-        return 0;
-    }
+    fclose(fp);
+    fToL();
 
-    return 1;
+    return 0;
 
 }

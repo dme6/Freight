@@ -21,7 +21,7 @@ void logWarning(const char* msg) {
 
     HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(console, YELLOW);
-    printf("INFO: %s\n", msg);
+    printf("WARNING: %s\n", msg);
     SetConsoleTextAttribute(console, WHITE);
 
 }

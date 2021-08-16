@@ -18,9 +18,9 @@ int setServer(int argc, const char* const* argv, const char* configLoc) {
 
 int getServer(const char* const* argv, const char* configLoc) {
 
-    char ip[25];
-    char port[25];
-    char final[50];
+    char ip[50];
+    char port[50];
+    char final[114];
 
     if(!getConfigEntry(ip, configLoc, "serverIP")) return 0;
     if(!getConfigEntry(port, configLoc, "serverPort")) return 0;
