@@ -27,6 +27,11 @@ int handleArgs(int argc, const char* const* argv) {
 
         if(!logIn(argc, argv, CONFIG_LOC)) return 0;
 
+    } else {
+
+        logError("Invalid argument.");
+        return 0;
+
     }
 
     return 1;

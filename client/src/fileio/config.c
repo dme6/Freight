@@ -2,25 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../logger/logger.h"
+#include "../util/trackedBuffer.h"
 
-static void fAppend(char* configBuffer, const char* name, const char* data) {
-    sprintf(configBuffer + strlen(configBuffer), "%s=%s\n", name, data);
+/*
+    Configuration files are used to store key value pairs for the program.
+    Any entry can be any size, but they must end with a new line.
+*/
+
+static void fAppend(TrackedBuffer* configBuffer, const char* name, const char* data) {
+    expandTrackedBuffer(configBuffer, strlen(name) + strlen(data) + 2);
+    sprintf(configBuffer->alloc + strlen(configBuffer->alloc), "%s=%s\n", name, data);
 }
 
 static void fToL() {
     logError("Failed to locate the specified entry.");
 }
 
-static void tooLarge() {
-    logWarning("Failed to read an entry properly because it is too large.");
-}
-
 int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
-    char* configBuffer = malloc(sizeof(char) * 1000);
-    char lineBuffer[50];
+    TrackedBuffer* configBuffer = createTrackedBuffer(sizeof(char));
+    ((char*) configBuffer->alloc)[0] = '\0';
+    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
+    ((char*) lineBuffer->alloc)[0] = '\0';
 
-    configBuffer[0] = '\0';
+    char buffer[10];
 
     FILE* fp = fopen(loc, "r");
 
@@ -32,21 +37,28 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
     int found = 0;
     
-    while(fgets(lineBuffer, sizeof(lineBuffer), fp)) {
+    while(fgets(buffer, sizeof(buffer), fp)) {
 
-        if(lineBuffer[strlen(lineBuffer) - 1] != '\n') {
-            tooLarge();
-        }
+        expandTrackedBuffer(lineBuffer, strlen(buffer));
+        strcat(lineBuffer->alloc, buffer);
 
-        char nameTok[sizeof(lineBuffer)];
-        strcpy(nameTok, lineBuffer);
-        strtok(nameTok, "=");
+        if(buffer[strlen(buffer) - 1] == '\n') {
 
-        if(strcmp(nameTok, name) == 0) {
-            fAppend(configBuffer, name, data);
-            found = 1;
-        } else {
-            strcat(configBuffer, lineBuffer);
+            char nameTok[lineBuffer->size];
+            strcpy(nameTok, lineBuffer->alloc);
+            strtok(nameTok, "=");
+
+            if(strcmp(nameTok, name) == 0) {
+                fAppend(configBuffer, name, data);
+                found = 1;
+            } else {
+                expandTrackedBuffer(configBuffer, strlen(lineBuffer->alloc));
+                strcat(configBuffer->alloc, lineBuffer->alloc);
+            }
+
+            resizeTrackedBuffer(lineBuffer, sizeof(char));
+            clearTrackedBuffer(lineBuffer);
+
         }
 
     }
@@ -58,51 +70,75 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
     fclose(fp);
 
     fp = fopen(loc, "w");
-    fprintf(fp, configBuffer);
+    fprintf(fp, configBuffer->alloc);
 
     fclose(fp);
-    free(configBuffer);
+
+    cleanTrackedBuffer(lineBuffer);
+    cleanTrackedBuffer(configBuffer);
 
     return 1;
 
 }
 
-int getConfigEntry(char* out, const char* loc, const char* name) {
 
-    char lineBuffer[50];
+int getConfigEntry(char** out, const char* loc, const char* name) {
+
+    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
+    ((char*) lineBuffer->alloc)[0] = '\0';
+
+    char buffer[10];
 
     FILE* fp = fopen(loc, "r");
 
     if(!fp) {
+
         fToL();
+        fclose(fp);
+        cleanTrackedBuffer(lineBuffer);
+
         return 0;
-    }
-
-    while(fgets(lineBuffer, sizeof(lineBuffer), fp)) {
-
-        if(lineBuffer[strlen(lineBuffer) - 1] != '\n') {
-            tooLarge();
-        }
-
-        char tok[sizeof(lineBuffer)];
-        strcpy(tok, lineBuffer);
-        strtok(tok, "=");
-
-        if(strcmp(tok, name) == 0) {
-
-            char* data = strtok(0, "=");
-            data[strlen(data) - 1] = '\0';
-            strcpy(out, data);
-
-            fclose(fp);
-            return 1;
-
-        }
 
     }
 
-    fclose(fp);
+    while(fgets(buffer, sizeof(buffer), fp)) {
+
+        expandTrackedBuffer(lineBuffer, strlen(buffer));
+        strcat(lineBuffer->alloc, buffer);
+
+        if(buffer[strlen(buffer) - 1] == '\n') {
+            
+            char nameTok[lineBuffer->size];
+            strcpy(nameTok, lineBuffer->alloc);
+            strtok(nameTok, "=");
+
+            if(strcmp(nameTok, name) == 0) {
+
+                char* dataTok = strtok(0, "=");
+                dataTok[strlen(dataTok) - 1] = '\0';
+
+                // I'm not sure if this is a good idea.
+                char* dataTokAlloc = malloc(strlen(dataTok) + 1);
+                strcpy(dataTokAlloc, dataTok);
+                *out = dataTokAlloc;
+
+                fclose(fp);
+                cleanTrackedBuffer(lineBuffer);
+
+                return 1;
+
+            }
+
+            resizeTrackedBuffer(lineBuffer, sizeof(char));
+            clearTrackedBuffer(lineBuffer);
+
+        }
+
+    }
+
     fToL();
+    fclose(fp);
+    cleanTrackedBuffer(lineBuffer);
 
     return 0;
 
