@@ -3,7 +3,7 @@
 #include "../../fileio/fileio.h"
 #include "../../logger/logger.h"
 
-int setServer(int argc, const char* const* argv, const char* configLoc) {
+int setServer(int argc, const char** argv, const char* configLoc) {
 
     if(argc < 4) {
         logFewArgs();
@@ -17,7 +17,7 @@ int setServer(int argc, const char* const* argv, const char* configLoc) {
 
 }
 
-int getServer(const char* const* argv, const char* configLoc) {
+int getServer(const char** argv, const char* configLoc) {
 
     char* ip;
     char* port;

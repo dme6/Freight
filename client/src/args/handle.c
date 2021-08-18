@@ -4,7 +4,7 @@
 
 #define CONFIG_LOC "./config.dat"
 
-int handleArgs(int argc, const char* const* argv) {
+int handleArgs(int argc, const char** argv) {
 
     if(argc < 2) {
         logFewArgs();
@@ -29,7 +29,8 @@ int handleArgs(int argc, const char* const* argv) {
 
     } else {
 
-        logError("Invalid argument.");
+        logError("Invalid arguments.");
+
         return 0;
 
     }

@@ -1,7 +1,7 @@
 #include "../../fileio/fileio.h"
 #include "../../logger/logger.h"
 
-int signUp(int argc, const char* const* argv, const char* configLoc) {
+int signUp(int argc, const char** argv, const char* configLoc) {
 
     if(argc < 4) {
         logFewArgs();
@@ -12,7 +12,7 @@ int signUp(int argc, const char* const* argv, const char* configLoc) {
 
 }
 
-int logIn(int argc, const char* const* argv, const char* configLoc) {
+int logIn(int argc, const char** argv, const char* configLoc) {
 
     if(argc < 4) {
         logFewArgs();
