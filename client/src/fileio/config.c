@@ -4,13 +4,16 @@
 #include "../logger/logger.h"
 #include "../util/trackedBuffer.h"
 
+#define CSIZE sizeof(char)
+
 /*
-    Configuration files are used to store key value pairs for the program.
+    Configuration files are used to store key-value pairs for the program.
     Any entry can be any size, but they must end with a new line.
 */
 
 static void fAppend(TrackedBuffer* configBuffer, const char* name, const char* data) {
-    expandTrackedBuffer(configBuffer, strlen(name) + strlen(data) + 2);
+    // The two extra chars are "=" and "\n".
+    expandTrackedBuffer(configBuffer, strlen(name) + strlen(data) + (CSIZE * 2));
     sprintf(configBuffer->alloc + strlen(configBuffer->alloc), "%s=%s\n", name, data);
 }
 
@@ -20,9 +23,9 @@ static void fToL() {
 
 int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
-    TrackedBuffer* configBuffer = createTrackedBuffer(sizeof(char));
+    TrackedBuffer* configBuffer = createTrackedBuffer(CSIZE);
     ((char*) configBuffer->alloc)[0] = '\0';
-    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
+    TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
     char buffer[10];
@@ -56,7 +59,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
                 strcat(configBuffer->alloc, lineBuffer->alloc);
             }
 
-            resizeTrackedBuffer(lineBuffer, sizeof(char));
+            resizeTrackedBuffer(lineBuffer, CSIZE);
             clearTrackedBuffer(lineBuffer);
 
         }
@@ -84,7 +87,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
 int getConfigEntry(char** out, const char* loc, const char* name) {
 
-    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
+    TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
     char buffer[10];
@@ -117,7 +120,7 @@ int getConfigEntry(char** out, const char* loc, const char* name) {
                 char* dataTok = strtok(0, "=");
                 dataTok[strlen(dataTok) - 1] = '\0';
 
-                // I'm not sure if this is a good idea.
+                // TODO: Change later if there is a better solution.
                 char* dataTokAlloc = malloc(strlen(dataTok) + 1);
                 strcpy(dataTokAlloc, dataTok);
                 *out = dataTokAlloc;
@@ -129,7 +132,7 @@ int getConfigEntry(char** out, const char* loc, const char* name) {
 
             }
 
-            resizeTrackedBuffer(lineBuffer, sizeof(char));
+            resizeTrackedBuffer(lineBuffer, CSIZE);
             clearTrackedBuffer(lineBuffer);
 
         }
