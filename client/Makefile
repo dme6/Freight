@@ -1,11 +1,12 @@
 CC   := gcc
-SRC  := $(shell dir /S /B .\src\*.c)
+SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
-LIBS := -lws2_32
-ARGS := getserver
+LIBS := # -lws2_32
+INC  := -I../common
+ARGS := getserver 1 1
 
 $(EXE): $(SRC)
-	@$(CC) $^ -o $@ $(LIBS)
+	@$(CC) $^ -o $@ $(LIBS) $(INC)
 	@echo Compiled.
 
 .PHONY: clean

@@ -21,21 +21,21 @@ static void fToL() {
     logError("Failed to locate the specified entry.");
 }
 
-int writeConfigEntry(const char* loc, const char* name, const char* data) {
+int writeConfigEntry(TrackedBuffer* loc, const char* name, const char* data) {
 
     TrackedBuffer* configBuffer = createTrackedBuffer(CSIZE);
     ((char*) configBuffer->alloc)[0] = '\0';
     TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
-    char buffer[10];
+    char buffer[50];
 
-    FILE* fp = fopen(loc, "r");
+    FILE* fp = fopen(loc->alloc, "r");
 
     if(!fp) {
         logWarning("Failed to access configuration file. One will be created.");
-        fclose(fopen(loc, "w"));
-        fp = fopen(loc, "r");
+        fclose(fopen(loc->alloc, "w"));
+        fp = fopen(loc->alloc, "r");
     }
 
     int found = 0;
@@ -72,7 +72,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
     fclose(fp);
 
-    fp = fopen(loc, "w");
+    fp = fopen(loc->alloc, "w");
     fprintf(fp, configBuffer->alloc);
 
     fclose(fp);
@@ -85,14 +85,14 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
 }
 
 
-int getConfigEntry(char** out, const char* loc, const char* name) {
+int getConfigEntry(TrackedBuffer* loc, const char* name, char** out) {
 
     TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
-    char buffer[10];
+    char buffer[50];
 
-    FILE* fp = fopen(loc, "r");
+    FILE* fp = fopen(loc->alloc, "r");
 
     if(!fp) {
 
@@ -141,6 +141,7 @@ int getConfigEntry(char** out, const char* loc, const char* name) {
 
     fToL();
     fclose(fp);
+
     cleanTrackedBuffer(lineBuffer);
 
     return 0;

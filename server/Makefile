@@ -1,11 +1,12 @@
 CC   := gcc
-SRC  := $(shell dir /S /B .\src\*.c)
+SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 LIBS :=
+INC  := -I../common
 ARGS :=
 
 $(EXE): $(SRC)
-	@$(CC) $^ -o $@ $(LIBS)
+	@$(CC) $^ -o $@ $(LIBS) $(INC)
 	@echo Compiled.
 
 .PHONY: clean

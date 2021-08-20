@@ -5,6 +5,7 @@
         "logger.h": "c",
         "functions.h": "c",
         "stdlib.h": "c",
-        "trackedbuffer.h": "c"
+        "trackedbuffer.h": "c",
+        "sha1.h": "c"
     }
 }

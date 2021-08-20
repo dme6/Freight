@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define BLUE 1
-#define YELLOW 6
-#define RED 4
-#define WHITE 7
-
-// printf("\x1b[34mINFO: %s\x1b[0m\n", msg);
+enum Color {
+    BLUE = 1,
+    YELLOW = 6,
+    RED = 4,
+    WHITE = 7
+};
 
 void logInfo(const char* msg) {
 
