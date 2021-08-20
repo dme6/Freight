@@ -3,7 +3,7 @@ SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 LIBS := # -lws2_32
 INC  := -I../common
-ARGS := getserver 1 1
+ARGS := getserver
 
 $(EXE): $(SRC)
 	@$(CC) $^ -o $@ $(LIBS) $(INC)

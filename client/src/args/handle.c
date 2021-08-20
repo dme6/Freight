@@ -1,28 +1,29 @@
 #include <string.h>
 #include <windows.h>
-#include <stdio.h>
 #include "../logger/logger.h"
 #include "./functions/functions.h"
 #include "../util/trackedBuffer.h"
 
 #define CONFIG_NAME "config.dat"
+#define CSIZE sizeof(char)
 
 static TrackedBuffer* makeConfigPath() {
 
-    TrackedBuffer* pathBuffer = createTrackedBuffer(sizeof(char) * 10);
+    TrackedBuffer* pathBuffer = createTrackedBuffer(CSIZE * 10);
 
     while(1) {
 
         GetModuleFileName(0, pathBuffer->alloc, pathBuffer->size);
         if(GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-            expandTrackedBuffer(pathBuffer, sizeof(char) * 10);
+            expandTrackedBuffer(pathBuffer, CSIZE * 10);
         } else {
             break;
         }
 
     }
     
-    size_t expansion = strlen(CONFIG_NAME) - (pathBuffer->size - strlen(pathBuffer->alloc));
+    // How much to expand buffer before adding CONFIG_NAME.
+    size_t expansion = (strlen(CONFIG_NAME) + 1) - (pathBuffer->size - strlen(pathBuffer->alloc));
 
     if(expansion > 0) expandTrackedBuffer(pathBuffer, expansion);
     strrchr(pathBuffer->alloc, '\\')[1] = '\0';
