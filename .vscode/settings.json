@@ -6,6 +6,8 @@
         "functions.h": "c",
         "stdlib.h": "c",
         "trackedbuffer.h": "c",
-        "sha1.h": "c"
+        "sha1.h": "c",
+        "args.h": "c",
+        "config.h": "c"
     }
 }

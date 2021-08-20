@@ -3,7 +3,7 @@ SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 LIBS :=
 INC  := -I../common
-ARGS :=
+ARGS := setport
 
 $(EXE): $(SRC)
 	@$(CC) $^ -o $@ $(LIBS) $(INC)
@@ -16,4 +16,4 @@ clean:
 
 .PHONY: run
 run: $(EXE)
-	@$(EXE)
+	@$(EXE) $(ARGS)

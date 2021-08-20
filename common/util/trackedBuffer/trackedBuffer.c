@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "trackedBuffer.h"
+#include <util/trackedBuffer.h>
 
 TrackedBuffer* createTrackedBuffer(size_t size) {
 

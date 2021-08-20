@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../logger/logger.h"
-#include "../util/trackedBuffer.h"
+#include <util/trackedBuffer.h>
+#include <console/logger.h>
 
 #define CSIZE sizeof(char)
 
@@ -21,7 +21,7 @@ static void fToL() {
     logError("Failed to locate the specified entry.");
 }
 
-int writeConfigEntry(TrackedBuffer* loc, const char* name, const char* data) {
+int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
     TrackedBuffer* configBuffer = createTrackedBuffer(CSIZE);
     ((char*) configBuffer->alloc)[0] = '\0';
@@ -30,12 +30,12 @@ int writeConfigEntry(TrackedBuffer* loc, const char* name, const char* data) {
 
     char buffer[50];
 
-    FILE* fp = fopen(loc->alloc, "r");
+    FILE* fp = fopen(loc, "r");
 
     if(!fp) {
         logWarning("Failed to access configuration file. One will be created.");
-        fclose(fopen(loc->alloc, "w"));
-        fp = fopen(loc->alloc, "r");
+        fclose(fopen(loc, "w"));
+        fp = fopen(loc, "r");
     }
 
     int found = 0;
@@ -72,7 +72,7 @@ int writeConfigEntry(TrackedBuffer* loc, const char* name, const char* data) {
 
     fclose(fp);
 
-    fp = fopen(loc->alloc, "w");
+    fp = fopen(loc, "w");
     fprintf(fp, configBuffer->alloc);
 
     fclose(fp);
@@ -85,14 +85,14 @@ int writeConfigEntry(TrackedBuffer* loc, const char* name, const char* data) {
 }
 
 
-int getConfigEntry(TrackedBuffer* loc, const char* name, char** out) {
+int getConfigEntry(const char* loc, const char* name, char** out) {
 
     TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
     char buffer[50];
 
-    FILE* fp = fopen(loc->alloc, "r");
+    FILE* fp = fopen(loc, "r");
 
     if(!fp) {
 
@@ -103,6 +103,8 @@ int getConfigEntry(TrackedBuffer* loc, const char* name, char** out) {
         return 0;
 
     }
+
+    int returnVal = 0;
 
     while(fgets(buffer, sizeof(buffer), fp)) {
 
@@ -125,10 +127,8 @@ int getConfigEntry(TrackedBuffer* loc, const char* name, char** out) {
                 strcpy(dataTokAlloc, dataTok);
                 *out = dataTokAlloc;
 
-                fclose(fp);
-                cleanTrackedBuffer(lineBuffer);
-
-                return 1;
+                returnVal = 1;
+                break;
 
             }
 
@@ -139,11 +139,11 @@ int getConfigEntry(TrackedBuffer* loc, const char* name, char** out) {
 
     }
 
-    fToL();
-    fclose(fp);
+    if(returnVal == 0) fToL();
 
+    fclose(fp);
     cleanTrackedBuffer(lineBuffer);
 
-    return 0;
+    return returnVal;
 
 }
