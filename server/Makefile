@@ -1,12 +1,13 @@
 CC   := gcc
 SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
-LIBS :=
+LIBS := # -lws2_32
 INC  := -I../common
 ARGS := getport
+OPS  := # -O2
 
 $(EXE): $(SRC)
-	@$(CC) $^ -o $@ $(LIBS) $(INC)
+	@$(CC) $^ -o $@ $(LIBS) $(INC) $(OPS)
 	@echo Compiled.
 
 .PHONY: clean

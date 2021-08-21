@@ -4,9 +4,10 @@ EXE  := ./bin/main.exe
 LIBS := # -lws2_32
 INC  := -I../common
 ARGS := getserver
+OPS  := # -O2
 
 $(EXE): $(SRC)
-	@$(CC) $^ -o $@ $(LIBS) $(INC)
+	@$(CC) $^ -o $@ $(LIBS) $(INC) $(OPS)
 	@echo Compiled.
 
 .PHONY: clean

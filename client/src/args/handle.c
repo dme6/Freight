@@ -2,7 +2,8 @@
 #include <path/make.h>
 #include <util/trackedBuffer.h>
 #include <console/logger.h>
-#include "functions.h"
+#include "functions/config.h"
+#include "functions/auth.h"
 
 int handleArgs(int argc, const char** argv) {
 

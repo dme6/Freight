@@ -34,3 +34,7 @@ void logError(const char* msg) {
     SetConsoleTextAttribute(console, WHITE);
 
 }
+
+void logFewArgs() {
+    logError("Not enough arguments.");
+}
