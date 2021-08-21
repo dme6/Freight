@@ -1,4 +1,5 @@
 #include <console/logger.h>
+#include <fileio/config.h>
 
 int setPort(int argc, const char** argv, const char* configLoc) {
 
@@ -6,6 +7,8 @@ int setPort(int argc, const char** argv, const char* configLoc) {
         logFewArgs();
         return 0;
     }
+
+    if(!writeConfigEntry(configLoc, "port", argv[2])) return 0;
 
     return 1;
 

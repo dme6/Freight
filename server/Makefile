@@ -3,7 +3,7 @@ SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 LIBS :=
 INC  := -I../common
-ARGS := setport
+ARGS := getport
 
 $(EXE): $(SRC)
 	@$(CC) $^ -o $@ $(LIBS) $(INC)

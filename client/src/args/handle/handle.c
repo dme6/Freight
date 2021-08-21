@@ -1,5 +1,5 @@
 #include <string.h>
-#include <path/config.h>
+#include <path/make.h>
 #include <util/trackedBuffer.h>
 #include <console/logger.h>
 #include "functions.h"

@@ -1,5 +1,5 @@
 #include <console/logger.h>
-#include "../../../fileio/config.h"
+#include <fileio/config.h>
 
 int signUp(int argc, const char** argv, const char* configLoc) {
 

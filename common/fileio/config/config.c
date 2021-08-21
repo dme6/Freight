@@ -28,7 +28,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
     TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
-    char buffer[50];
+    char buffer[20];
 
     FILE* fp = fopen(loc, "r");
 
@@ -90,7 +90,7 @@ int getConfigEntry(const char* loc, const char* name, char** out) {
     TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
     ((char*) lineBuffer->alloc)[0] = '\0';
 
-    char buffer[50];
+    char buffer[20];
 
     FILE* fp = fopen(loc, "r");
 
@@ -122,7 +122,6 @@ int getConfigEntry(const char* loc, const char* name, char** out) {
                 char* dataTok = strtok(0, "=");
                 dataTok[strlen(dataTok) - 1] = '\0';
 
-                // TODO: Change later if there is a better solution.
                 char* dataTokAlloc = malloc(strlen(dataTok) + 1);
                 strcpy(dataTokAlloc, dataTok);
                 *out = dataTokAlloc;

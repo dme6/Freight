@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <console/logger.h>
-#include "../../../fileio/config.h"
+#include <fileio/config.h>
 
 int setServer(int argc, const char** argv, const char* configLoc) {
 
