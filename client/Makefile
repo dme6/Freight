@@ -2,7 +2,7 @@ CC   := gcc
 SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 LIBS := # -lws2_32
-INC  := -I../common
+INC  := -I../common/src -I../common/vendor
 ARGS := getserver
 OPS  := # -O2
 

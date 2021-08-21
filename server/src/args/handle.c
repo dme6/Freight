@@ -21,7 +21,7 @@ int handleArgs(int argc, const char** argv) {
 
     } else if(strcmp(argv[1], "getport") == 0) {
 
-        if(!getPort(argv, configPath->alloc));
+        if(!getPort(argv, configPath->alloc)) returnVal = 0;
 
     } else {
 

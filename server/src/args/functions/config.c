@@ -12,6 +12,7 @@ int getPort(const char** argv, const char* configLoc) {
     printf("Port: %s\n", port);
 
     free(port);
+    
     return 1;
 
 }
