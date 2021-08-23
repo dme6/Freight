@@ -2,7 +2,7 @@ CC   := gcc
 SRC  := $(shell dir /S /B .\src\*.c ..\common\*.c)
 EXE  := ./bin/main.exe
 
-LIBS := # -lws2_32
+LIBS := -lws2_32
 INC  := -I../common/src -I../common/vendor
 DBG  := -g
 OPS  := # -O2
