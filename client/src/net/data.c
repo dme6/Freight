@@ -26,8 +26,8 @@ int recieveData(SOCKET* sock) {
 
             logError("Failed to recieve data.");
             return 0;
-
-	    }
+            
+        }
 
         logInfo("Chunk recieved.");
 

@@ -14,11 +14,11 @@ int startListening(u_short port) {
     };
 
     if(bind(sock, (struct sockaddr*) &addr, sizeof(addr)) == SOCKET_ERROR) {
-
-		logError("Failed to bind.");
+        
+        logError("Failed to bind.");
         return 0;
-
-	}
+        
+    }
 
     listen(sock, 3);
 
