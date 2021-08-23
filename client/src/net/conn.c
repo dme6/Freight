@@ -14,10 +14,10 @@ int startConnection(const char* ip, u_short port, SOCKET* outSock) {
     SOCKET sock;
     if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
 
-		logError("Failed to create a socket.");
+        logError("Failed to create a socket.");
         return 0;
-
-	}
+        
+    }
 
     struct sockaddr_in addr = {
         .sin_addr.s_addr = inet_addr(ip),
