@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <console/logger.h>
 #include <fileio/config.h>
 
@@ -7,8 +8,6 @@ int signUp(int argc, const char** argv, const char* configLoc) {
         logFewArgs();
         return 0;
     }
-
-    // writeConfigEntry(configLoc, "password", argv[3]);
 
     return 1;
 
