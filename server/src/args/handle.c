@@ -3,6 +3,7 @@
 #include <util/trackedBuffer.h>
 #include <console/logger.h>
 #include "functions/config.h"
+#include "functions/listen.h"
 
 int handleArgs(int argc, const char** argv) {
 
@@ -22,6 +23,10 @@ int handleArgs(int argc, const char** argv) {
     } else if(strcmp(argv[1], "getport") == 0) {
 
         if(!getPort(argv, configPath->alloc)) returnVal = 0;
+
+    } else if(strcmp(argv[1], "listen") == 0) {
+    
+        if(!listenFunction(configPath->alloc)) returnVal = 0;
 
     } else {
 

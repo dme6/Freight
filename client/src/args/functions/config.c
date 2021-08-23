@@ -17,7 +17,7 @@ int setServer(int argc, const char** argv, const char* configLoc) {
 
 }
 
-int getServer(const char** argv, const char* configLoc) {
+int getServer(const char* configLoc) {
 
     char* ip;
     char* port;

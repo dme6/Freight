@@ -2,4 +2,4 @@
 
 #include <winsock2.h>
 
-int startListening(u_short port);
+int initNet(SOCKET* sock);

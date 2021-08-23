@@ -22,7 +22,7 @@ int handleArgs(int argc, const char** argv) {
 
     } else if(strcmp(argv[1], "getserver") == 0) {
 
-        if(!getServer(argv, configPath->alloc)) returnVal = 0;
+        if(!getServer(configPath->alloc)) returnVal = 0;
 
     } else if(strcmp(argv[1], "signup") == 0) {
 
