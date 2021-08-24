@@ -39,7 +39,6 @@ int startListening(u_short port) {
         logInfo("Connected.");
 
         closesocket(clientSock);
-        break;
 
     }
 

@@ -9,6 +9,8 @@ int listenFunction(const char* configLoc) {
 
     if(!startListening((u_short) strtoul(port, 0, 0))) return 0;
 
+    free(port);
+
     return 1;
 
 }

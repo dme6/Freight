@@ -21,6 +21,9 @@ int signUp(int argc, const char** argv, const char* configLoc) {
     if(!startConnection(ip, (u_short) strtoul(port, 0, 0), &sock)) return 0;
     endConnection(&sock);
 
+    free(ip);
+    free(port);
+
     return 1;
 
 }

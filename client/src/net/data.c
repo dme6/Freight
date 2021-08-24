@@ -33,6 +33,8 @@ int recieveData(SOCKET* sock) {
 
     } while(read > 0);
 
+    cleanTrackedBuffer(buffer);
+
     return 1;
     
 }
