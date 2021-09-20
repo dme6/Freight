@@ -1,6 +1,7 @@
 #include <winsock2.h>
 #include <net/init.h>
 #include <console/logger.h>
+#include "conn.h"
 
 int startListening(u_short port) {
 
@@ -36,9 +37,7 @@ int startListening(u_short port) {
 
         }
 
-        logInfo("Connected.");
-
-        closesocket(clientSock);
+        handleConnection(&clientSock);
 
     }
 
