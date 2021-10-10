@@ -14,10 +14,18 @@ int initNet(SOCKET* sock) {
     if((*sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
 
         logError("Failed to create a socket.");
+        WSACleanup();
         return 0;
         
     }
 
     return 1;
+
+}
+
+void cleanNet(SOCKET* sock) {
+
+    closesocket(*sock);
+    WSACleanup();
 
 }

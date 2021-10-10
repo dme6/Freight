@@ -4,8 +4,6 @@
 #include <util/trackedBuffer.h>
 #include <console/logger.h>
 
-#define CSIZE sizeof(char)
-
 /*
     Configuration files are used to store key-value pairs for the program.
     Any entry can be any size, but they must end with a new line.
@@ -13,19 +11,15 @@
 
 static void fAppend(TrackedBuffer* configBuffer, const char* name, const char* data) {
     // The two extra chars are "=" and "\n".
-    expandTrackedBuffer(configBuffer, strlen(name) + strlen(data) + (CSIZE * 2));
+    expandTrackedBuffer(configBuffer, strlen(name) + strlen(data) + (sizeof(char) * 2));
     sprintf(configBuffer->alloc + strlen(configBuffer->alloc), "%s=%s\n", name, data);
-}
-
-static void fToL() {
-    logError("Failed to locate the specified entry.");
 }
 
 int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
-    TrackedBuffer* configBuffer = createTrackedBuffer(CSIZE);
+    TrackedBuffer* configBuffer = createTrackedBuffer(sizeof(char));
     ((char*) configBuffer->alloc)[0] = '\0';
-    TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
+    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
     ((char*) lineBuffer->alloc)[0] = '\0';
 
     char buffer[20];
@@ -59,7 +53,7 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
                 strcat(configBuffer->alloc, lineBuffer->alloc);
             }
 
-            resizeTrackedBuffer(lineBuffer, CSIZE);
+            resizeTrackedBuffer(lineBuffer, sizeof(char));
             clearTrackedBuffer(lineBuffer);
 
         }
@@ -84,10 +78,9 @@ int writeConfigEntry(const char* loc, const char* name, const char* data) {
 
 }
 
-
 int getConfigEntry(const char* loc, const char* name, char** out) {
 
-    TrackedBuffer* lineBuffer = createTrackedBuffer(CSIZE);
+    TrackedBuffer* lineBuffer = createTrackedBuffer(sizeof(char));
     ((char*) lineBuffer->alloc)[0] = '\0';
 
     char buffer[20];
@@ -95,17 +88,12 @@ int getConfigEntry(const char* loc, const char* name, char** out) {
     FILE* fp = fopen(loc, "r");
 
     if(!fp) {
-
-        fToL();
-        fclose(fp);
         cleanTrackedBuffer(lineBuffer);
-
         return 0;
-
     }
 
-    int returnVal = 0;
-
+    int found = 0;
+    
     while(fgets(buffer, sizeof(buffer), fp)) {
 
         expandTrackedBuffer(lineBuffer, strlen(buffer));
@@ -126,23 +114,22 @@ int getConfigEntry(const char* loc, const char* name, char** out) {
                 strcpy(dataTokAlloc, dataTok);
                 *out = dataTokAlloc;
 
-                returnVal = 1;
+                found = 1;
                 break;
 
             }
 
-            resizeTrackedBuffer(lineBuffer, CSIZE);
+            resizeTrackedBuffer(lineBuffer, sizeof(char));
             clearTrackedBuffer(lineBuffer);
 
         }
 
     }
 
-    if(returnVal == 0) fToL();
-
+    if(!found) logError("Failed to locate the specified entry.");
     fclose(fp);
     cleanTrackedBuffer(lineBuffer);
 
-    return returnVal;
+    return found;
 
 }

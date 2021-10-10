@@ -17,13 +17,20 @@ int startListening(u_short port) {
     if(bind(sock, (struct sockaddr*) &addr, sizeof(addr)) == SOCKET_ERROR) {
         
         logError("Failed to bind.");
+        cleanNet(&sock);
         return 0;
         
     }
 
-    listen(sock, 3);
+    if(listen(sock, 3) == SOCKET_ERROR) {
 
-    while(1) {
+        logError("Failed to listen.");
+        cleanNet(&sock);
+        return 0;
+
+    }
+
+    for(;;) {
 
         struct sockaddr_in clientAddr;
         int clientAddrLen = sizeof(struct sockaddr_in);
@@ -33,6 +40,7 @@ int startListening(u_short port) {
         if((clientSock = accept(sock, (struct sockaddr*) &clientAddr, &clientAddrLen)) == INVALID_SOCKET) {
 
             logError("Failed to accept connection.");
+            cleanNet(&sock);
             return 0;
 
         }
@@ -41,8 +49,7 @@ int startListening(u_short port) {
 
     }
 
-    closesocket(sock);
-    WSACleanup();
+    cleanNet(&sock);
 
     return 1;
 

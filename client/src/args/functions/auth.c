@@ -3,10 +3,13 @@
 #include <console/logger.h>
 #include <fileio/config.h>
 #include <util/trackedBuffer.h>
+#include <net/init.h>
 #include "../../net/conn.h"
 #include "../../net/data.h"
 
 int signUp(int argc, const char** argv, const char* configLoc) {
+
+    int returnVal = 1;
 
     if(argc < 4) {
         logFewArgs();
@@ -20,22 +23,32 @@ int signUp(int argc, const char** argv, const char* configLoc) {
     if(!getConfigEntry(configLoc, "serverPort", &port)) return 0;
 
     SOCKET sock;
-    if(!startConnection(ip, (u_short) strtoul(port, 0, 0), &sock)) return 0;
+    if(!startConnection(ip, (u_short) strtoul(port, 0, 0), &sock)) {
+        returnVal = 0;
+        goto cleanup1;
+    }
 
-    TrackedBuffer* buffer = createTrackedBuffer(sizeof(char) * 9);
-    strcpy(buffer->alloc, "Testing.");
+    size_t dataSize = strlen(argv[2]) + 1 + (strlen(argv[3]) + 1);
 
-    sendData(&sock, buffer);
-    sendData(&sock, buffer);
+    TrackedBuffer* header = createTrackedBuffer(sizeof(int) * 2);
+    ((int*) header->alloc)[0] = 1;
+    ((int*) header->alloc)[1] = dataSize;
+    sendData(&sock, header);
+
+    TrackedBuffer* data = createTrackedBuffer(dataSize);
+    sprintf(data->alloc, "%s;%s", argv[2], argv[3]);
+    sendData(&sock, data);
 
     shutdown(sock, SD_SEND);
-    endConnection(&sock);
-
-    cleanTrackedBuffer(buffer);
-    free(ip);
+    cleanNet(&sock);
+    cleanTrackedBuffer(header);
+    cleanTrackedBuffer(data);
     free(port);
 
-    return 1;
+cleanup1:
+    free(ip);
+
+    return returnVal;
 
 }
 

@@ -3,17 +3,16 @@
 #include <util/trackedBuffer.h>
 
 #define CONFIG_NAME "config.dat"
-#define CSIZE sizeof(char)
 
 TrackedBuffer* makeConfigPath() {
 
-    TrackedBuffer* pathBuffer = createTrackedBuffer(CSIZE * 10);
+    TrackedBuffer* pathBuffer = createTrackedBuffer(sizeof(char) * 10);
 
-    while(1) {
+    for(;;) {
 
         GetModuleFileName(0, pathBuffer->alloc, pathBuffer->size);
         if(GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-            expandTrackedBuffer(pathBuffer, CSIZE * 10);
+            expandTrackedBuffer(pathBuffer, sizeof(char) * 10);
         } else {
             break;
         }

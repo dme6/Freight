@@ -12,9 +12,9 @@ int handleArgs(int argc, const char** argv) {
         return 0;
     }
 
-    TrackedBuffer* configPath = makeConfigPath();
-
     int returnVal = 1;
+
+    TrackedBuffer* configPath = makeConfigPath();
 
     if(strcmp(argv[1], "setport") == 0) {
 

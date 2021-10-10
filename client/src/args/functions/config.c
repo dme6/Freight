@@ -19,17 +19,25 @@ int setServer(int argc, const char** argv, const char* configLoc) {
 
 int getServer(const char* configLoc) {
 
+    int returnVal = 1;
+
     char* ip;
     char* port;
 
     if(!getConfigEntry(configLoc, "serverIP", &ip)) return 0;
-    if(!getConfigEntry(configLoc, "serverPort", &port)) return 0;
+
+    if(!getConfigEntry(configLoc, "serverPort", &port)) {
+        returnVal = 0;
+        goto cleanup1;
+    }
 
     printf("IP: %s\nPort: %s\n", ip, port);
+
+cleanup1:
 
     free(ip);
     free(port);
 
-    return 1;
+    return returnVal;
 
 }

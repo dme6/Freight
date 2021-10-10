@@ -3,40 +3,41 @@
 #include <util/trackedBuffer.h>
 #include <console/logger.h>
 #include <stdio.h>
+#include <stdint.h>
+#include "request.h"
 
 DWORD WINAPI handleFunc(void* clientSockP) {
 
-    TrackedBuffer* buffer = createTrackedBuffer(sizeof(char) * 1024);
+    int returnVal = 1;
+
+    TrackedBuffer* headerBuffer = createTrackedBuffer(sizeof(int) * 2);
     SOCKET clientSock = *((SOCKET*) clientSockP);
 
-    while(1) {
-
-        int read;
-
-        if((read = recv(clientSock, buffer->alloc, buffer->size, 0)) == SOCKET_ERROR) {
-
-            logError("Failed to recieve data.");
-            return 1;
-
-	    }
-
-        if(read > 0) {
-            logInfo(buffer->alloc);
-        } else break;
-
+    if(recv(clientSock, headerBuffer->alloc, headerBuffer->size, 0) == SOCKET_ERROR) {
+        // ...
     }
 
+    int* header = headerBuffer->alloc;
+
+    switch(header[0]) {
+        case 1: {
+            if(!handleSignUp(clientSockP, header[1])) returnVal = 0;
+            break;
+        }
+    }
+
+    cleanTrackedBuffer(headerBuffer);
     shutdown(clientSock, SD_SEND);
     closesocket(clientSock);
 
-    cleanTrackedBuffer(buffer);
-
-    return 0;
+    return returnVal;
 
 }
 
 void handleConnection(SOCKET* clientSock) {
 
-    CreateThread(0, 0, handleFunc, clientSock, 0, 0);
+    HANDLE thread = CreateThread(0, 0, handleFunc, clientSock, 0, 0);
+    // Detatch.
+    CloseHandle(thread);
 
 }

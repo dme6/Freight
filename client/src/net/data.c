@@ -17,16 +17,17 @@ int sendData(SOCKET* sock, TrackedBuffer* tb) {
 
 int recieveData(SOCKET* sock) {
 
+    int returnVal = 1;
+
     int read;
     TrackedBuffer* buffer = createTrackedBuffer(sizeof(char) * 1024);
 
     do {
 
         if((read = recv(*sock, buffer->alloc, buffer->size, 0)) == SOCKET_ERROR) {
-
+            returnVal = 0;
             logError("Failed to recieve data.");
-            return 0;
-            
+            break;
         }
 
         logInfo("Chunk recieved.");
@@ -35,6 +36,6 @@ int recieveData(SOCKET* sock) {
 
     cleanTrackedBuffer(buffer);
 
-    return 1;
+    return returnVal;
     
 }

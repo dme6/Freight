@@ -3,14 +3,16 @@
 
 int listenFunction(const char* configLoc) {
 
+    int returnVal = 1;
+
     char* port;
 
     if(!getConfigEntry(configLoc, "port", &port)) return 0;
 
-    if(!startListening((u_short) strtoul(port, 0, 0))) return 0;
+    if(!startListening((u_short) strtoul(port, 0, 0))) returnVal = 0;
 
     free(port);
-
-    return 1;
+    
+    return returnVal;
 
 }

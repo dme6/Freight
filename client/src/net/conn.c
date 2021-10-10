@@ -15,6 +15,7 @@ int startConnection(const char* ip, u_short port, SOCKET* sock) {
     if(connect(*sock, (struct sockaddr*) &addr, sizeof(addr)) < 0) {
 
         logError("Failed to connect.");
+        cleanNet(sock);
         return 0;
 
     }
@@ -22,12 +23,5 @@ int startConnection(const char* ip, u_short port, SOCKET* sock) {
     logInfo("Connected.");
 
     return 1;
-
-}
-
-void endConnection(SOCKET* s) {
-
-    closesocket(*s);
-    WSACleanup();
 
 }

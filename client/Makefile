@@ -8,11 +8,13 @@ DBG  := -g
 OPS  := # -O2
 
 $(EXE): $(SRC)
+	@echo Compiling.
 	@$(CC) $^ -o $@ $(LIBS) $(INC) $(DBG) $(OPS)
 	@echo Compiled.
 
 .PHONY: clean
 clean:
+	@echo Cleaning.
 	@del /S /Q .\bin\*
 	@echo Cleaned.
 
