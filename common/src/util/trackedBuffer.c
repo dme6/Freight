@@ -6,12 +6,13 @@
 TrackedBuffer* createTrackedBuffer(size_t size) {
 
     TrackedBuffer* tb = malloc(sizeof(TrackedBuffer));
-    tb->size = size;
 
     if(size < 1) {
         tb->alloc = 0;
+        tb->size = 0;
     } else {
         tb->alloc = malloc(size);
+        tb->size = size;
     }
 
     return tb;
