@@ -101,13 +101,14 @@ int getConfigEntry(const char* loc, const char* name, char** out) {
 
         if(buffer[strlen(buffer) - 1] == '\n') {
             
-            char nameTok[lineBuffer->size];
-            strcpy(nameTok, lineBuffer->alloc);
-            strtok(nameTok, "=");
+            char lineCopy[lineBuffer->size];
+            strcpy(lineCopy, lineBuffer->alloc);
+            char* nameTok = strtok(lineCopy, "=");
 
             if(strcmp(nameTok, name) == 0) {
 
-                char* dataTok = strtok(0, "=");
+                char* dataTok = strtok(0, "");
+                // Remove new line at end.
                 dataTok[strlen(dataTok) - 1] = '\0';
 
                 char* dataTokAlloc = malloc(strlen(dataTok) + 1);

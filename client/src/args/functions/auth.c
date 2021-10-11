@@ -4,6 +4,7 @@
 #include <fileio/config.h>
 #include <util/trackedBuffer.h>
 #include <net/init.h>
+#include <stdint.h>
 #include "../../net/conn.h"
 #include "../../net/data.h"
 
@@ -20,19 +21,21 @@ int signUp(int argc, const char** argv, const char* configLoc) {
     char* port;
 
     if(!getConfigEntry(configLoc, "serverIP", &ip)) return 0;
-    if(!getConfigEntry(configLoc, "serverPort", &port)) return 0;
-
-    SOCKET sock;
-    if(!startConnection(ip, (u_short) strtoul(port, 0, 0), &sock)) {
+    if(!getConfigEntry(configLoc, "serverPort", &port)) {
         returnVal = 0;
         goto cleanup1;
     }
 
+    SOCKET sock;
+    if(!startConnection(ip, (u_short) strtoul(port, 0, 0), &sock)) {
+        returnVal = 0;
+        goto cleanup2;
+    }
+
     size_t dataSize = strlen(argv[2]) + 1 + (strlen(argv[3]) + 1);
 
-    TrackedBuffer* header = createTrackedBuffer(sizeof(int) * 2);
-    ((int*) header->alloc)[0] = 1;
-    ((int*) header->alloc)[1] = dataSize;
+    TrackedBuffer* header = createTrackedBuffer(sizeof(uint8_t));
+    ((uint8_t*) header->alloc)[0] = 0x01;
     sendData(&sock, header);
 
     TrackedBuffer* data = createTrackedBuffer(dataSize);
@@ -43,8 +46,9 @@ int signUp(int argc, const char** argv, const char* configLoc) {
     cleanNet(&sock);
     cleanTrackedBuffer(header);
     cleanTrackedBuffer(data);
-    free(port);
 
+cleanup2:
+    free(port);
 cleanup1:
     free(ip);
 

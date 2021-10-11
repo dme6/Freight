@@ -2,4 +2,4 @@
 
 #include <winsock2.h>
 
-int handleSignUp(SOCKET* clientSockP, int size);
+int handleSignUp(SOCKET* clientSockP);

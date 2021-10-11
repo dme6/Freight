@@ -6,8 +6,11 @@ int startConnection(const char* ip, u_short port, SOCKET* sock) {
 
     if(!initNet(sock)) return 0;
 
+    // struct hostent* rh = gethostbyname("localhost");
+
     struct sockaddr_in addr = {
         .sin_addr.s_addr = inet_addr(ip),
+        // .sin_addr = *((struct in_addr*) rh->h_addr_list[0]),
         .sin_family = AF_INET,
         .sin_port = htons(port)
     };
