@@ -36,17 +36,20 @@ int signUp(int argc, const char** argv, const char* configLoc) {
 
     TrackedBuffer* header = createTrackedBuffer(sizeof(uint8_t));
     ((uint8_t*) header->alloc)[0] = 0x01;
-    sendData(&sock, header);
+    if(!sendData(&sock, header)) {
+        returnVal = 0;
+        goto cleanup3;
+    }
 
     TrackedBuffer* data = createTrackedBuffer(dataSize);
     sprintf(data->alloc, "%s;%s", argv[2], argv[3]);
-    sendData(&sock, data);
+    if(!sendData(&sock, data)) returnVal = 0;
 
+    cleanTrackedBuffer(data);
+cleanup3:
     shutdown(sock, SD_SEND);
     cleanNet(&sock);
     cleanTrackedBuffer(header);
-    cleanTrackedBuffer(data);
-
 cleanup2:
     free(port);
 cleanup1:

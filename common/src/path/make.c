@@ -2,7 +2,7 @@
 #include <string.h>
 #include <util/trackedBuffer.h>
 
-#define CONFIG_NAME "config.dat"
+static const char* CONFIG_NAME = "config.dat";
 
 TrackedBuffer* makeConfigPath() {
 

@@ -30,13 +30,11 @@ int getServer(const char* configLoc) {
         returnVal = 0;
         goto cleanup1;
     }
-
+    
     printf("IP: %s\nPort: %s\n", ip, port);
 
     free(port);
-
 cleanup1:
-
     free(ip);
 
     return returnVal;
